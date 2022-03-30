@@ -11,16 +11,16 @@ class Point: # точка на эллиптической кривой
         self.y = y
         if self.x is None and self.y is None:
             return
-        if self.y**2 != self.x**3 + a * x + b:
+        if self.y**2 != self.x**3 + a * x + b: # Проверка на принадлежность к кривой описываемой уравнением y^2 = x^3 + ax + b
             raise ValueError('({}, {}) is not on ther curve.'.format(x, y))
 
-    def __repr__(self):
+    def __repr__(self): # Строковое представление эдементов класса
         return 'Point({}, {})_{}_{}'.format(self.x, self.y, self.a, self.b)
 
-    def __eq__(self, other):
+    def __eq__(self, other): # фукнция сравнения элементов
         return self.x == other.x and self.y == other.y and self.a == other.a and self.b == other.b
 
-    def __add__(self, other):
+    def __add__(self, other): # функция сложения элементов
         if self.a != other.a or self.b != other.b:
             raise TypeError('Points {}, {} are not on the same curve.'.format(self, other))
         if self.x == other.x and self.y != other.y:
@@ -55,7 +55,7 @@ class Point: # точка на эллиптической кривой
 
 class FieldElement: # Класс для элемента конечного поля
 
-    def __init__(self, num, prime):
+    def __init__(self, num, prime): # элемент поля (элемент, *предел поля*)
         if num >= prime or num <0:
             error = 'Num {} not in field range 0 to {}'.format(num, prime-1)
             raise ValueError(error)
@@ -104,7 +104,7 @@ class FieldElement: # Класс для элемента конечного по
         num = (self.num * (other.num ** (self.prime - 2))) % self.prime
         return self.__class__(num, self.prime)
 
-class ECCTest(TestCase):
+class ECCTest(TestCase): # класс тестирования
     def test_on_curve(self):
         prime = 223
         a = FieldElement(0, prime)
@@ -122,12 +122,12 @@ class ECCTest(TestCase):
                 Point(x, y, a, b)
 
 #----- эллиптическая кривая secp256k1
-P= 2**256 - 2**32 - 977
+P = 2**256 - 2**32 - 977
 A = 0
 B = 7
 N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
 
-class S256Field(FieldElement):
+class S256Field(FieldElement): # элемент поля над эллиптической кривой
 
     def __init__(self, num, prime=None):
         super().__init__(num=num, prime=P)
@@ -184,7 +184,7 @@ class PrivateKey: # Секретный ключ
             s = N - s
         return Signature(r, s)
 
-    def deterministic_k(self, z):
+    def deterministic_k(self, z): # функция создания уникальной величины k
         k = b'\x00' * 32
         v = b'\x01' * 32
         if z > N:
